@@ -1,0 +1,398 @@
+#pragma once
+
+#include <iostream>
+using namespace std;
+
+template <class t_c>
+class clsDoublyLinkedList {
+    
+    public:
+    class clsNode {
+        public:
+        clsNode* prev;
+                t_c data;
+                clsNode* next;
+            };
+            
+            
+            clsDoublyLinkedList(clsNode* head){
+                _head = head;
+            }
+            clsDoublyLinkedList(){
+                _head = nullptr;
+            }
+            
+            static void print(clsNode* head){
+                cout << "NULL <--> ";
+                while(head){
+                cout << head->data << " <--> ";
+                head = head->next;
+            }
+            cout << "NULL" << endl;
+        }
+        
+        void print(void){
+            print(this->_head);
+        }
+        
+        static void print_detail(clsNode* head){
+            while(head){
+                if(head->prev){
+                    cout << head->prev->data;
+                }
+                else {
+                    cout << "NULL";
+                };
+                cout << " <--> " << head->data << " <--> ";
+                if(head->next){
+                    cout << head->next->data << endl;
+                }
+                else{
+                    cout << "NULL" << endl;
+                }
+                head = head->next;
+            }
+        }
+        
+        void print_detail(void){
+            print_detail(_head);
+        }
+        
+        
+
+        static void insert_at_beginning(clsNode* &head, t_c data){
+            clsNode* new_node = new clsNode;
+            
+            new_node->data = data;
+            new_node->prev = nullptr;
+            new_node->next = head;
+            
+            if(head){
+                head->prev = new_node;
+            }
+            
+            head = new_node;
+            
+        }
+        
+        void insert_at_beginning(t_c data){
+            insert_at_beginning(_head, data);
+            _size++;
+        }
+        
+        
+        static clsNode* find(clsNode* head, t_c data){
+            while(head){
+                if(head->data == data){
+                    return head;
+                }
+                head = head->next;
+            }
+        }
+        
+        clsNode* find(t_c data){
+            return find(_head, data);
+        }
+
+        
+        static void insert_after(clsNode* &head, clsNode* node, t_c data){
+            clsNode* new_node = new clsNode;
+
+            new_node->data = data;
+            
+            new_node->prev = node;
+            new_node->next = node->next;
+            
+            if(node->next){
+                node->next->prev = new_node;
+            }
+            
+            node->next = new_node;
+
+        }
+        
+        void insert_after(clsNode* node, t_c data){
+            insert_after(_head, node, data);
+            _size++;
+        }
+        
+        
+
+        static void insert_at_end(clsNode* &head, t_c data){
+            clsNode* new_node = new clsNode;
+            
+            new_node->data = data;
+            new_node->next = nullptr;
+            
+            if(!head){
+                new_node->prev = nullptr;
+                head = new_node;
+                return;
+            }
+            
+            clsNode *h = head;
+            while(h->next){
+                h = h->next;
+            }
+            
+            new_node->prev = h;
+            h->next = new_node;
+            
+        }
+        
+        void insert_at_end(t_c data){
+            insert_at_end(_head, data);
+            _size++;
+        }
+        
+        static void del(clsNode* &head, clsNode* node){
+            if(!head || !node){
+                return;
+            }
+            
+            if(head == node){
+                node->prev = nullptr;
+                head = node->next;
+            }
+            
+            if(node->prev){
+                node->prev->next = node->next;
+            }
+            
+            if(node->next){
+                node->next->prev = node->prev;
+            }
+            
+            // delete node;
+            
+        }
+        
+        void del(clsNode* node){
+            del(_head, node);
+            _size--;
+        }
+        
+
+        static void del_first_node(clsNode* &head){
+            if(!head || !head->next){
+                head = nullptr;
+            }
+            else{
+                clsNode* h = head;
+                head = head->next;
+                head->prev = nullptr;
+                // delete h;
+            }
+            
+        }
+        
+        
+        void del_first_node(void){
+            del_first_node(_head);
+            _size--;
+        }
+
+        void del_last_node(clsNode* &head){
+            if(!head || !head->next){
+                head = nullptr;
+            }
+            else{
+                clsNode* h = head;
+                while(h->next){
+                    h = h->next;
+                }
+                
+                h->prev->next = nullptr;
+                
+                // delete h;
+            }
+
+        }
+        
+        void del_last_node(void){
+            del_last_node(_head);
+            _size--;
+        }
+        
+        static int size(clsNode* head){
+            int count = 0;
+            while(head){
+                head = head->next;
+                count++;
+            }
+            
+            return count;
+        }
+        
+        int size(void){
+            return _size;
+        }
+
+        static bool empty(clsNode* head){
+            return !size(head);
+        }
+
+        bool empty(void){
+            return !_size;
+        }
+        
+        static void cls(clsNode* &head){
+            while(head){
+                del_first_node(head);
+            }
+        }
+        
+        void cls(void){
+            while(_size){
+                del_first_node();
+            }
+        }
+        
+
+        static clsNode* last_node(clsNode* head){
+            if(head){
+
+                while(head->next){
+                    head = head->next;
+                }
+                
+                return head;
+            }
+        }
+        
+        clsNode* last_node(void){
+            last_node(_head);
+        }
+        
+
+        static t_c last_data(clsNode* head){
+            clsNode* node = last_node(head);
+            if (node)
+                return node->data;
+        }
+            
+        
+        t_c last_data(void){
+            return last_data(_head);
+        }
+
+        static clsNode* first_node(clsNode* head){
+            if(head)
+                return head;
+        }
+
+        clsNode* first_node(void){
+            return first_node(_head);
+        }
+        
+        static t_c first_data(clsNode* head){
+            clsNode* node = first_node(head);
+            if (node)
+                return node->data;
+        }
+
+        t_c first_data(void){
+            return first_data(_head);
+        }
+
+
+        static void reverse(clsNode* &head){
+            clsNode* temp = nullptr;
+
+            while(head){
+                temp = head->prev;
+                head->prev = head->next;
+                head->next = temp;
+
+                head = head->prev;
+            }
+
+            if(temp){
+                head = temp->prev;
+            }
+
+        }
+
+
+        void reverse(void){
+            reverse(_head);
+        }
+
+        static clsNode* get_node(clsNode* head, int index){
+            int size_node = size(head);
+
+            if(index < 0){
+                index += size_node;
+            }
+            
+            if(index > size_node){
+                return nullptr;
+            }
+            
+            while(index-- && head){
+                head = head->next;
+            }
+
+            return head;
+        }
+
+        clsNode* get_node(int index){
+            if(index < 0){
+                index += _size;
+            }
+            return get_node(_head, index);
+        }
+
+
+        static t_c get(clsNode* head, int index){
+            clsNode* node = get_node(head, index);
+            if (node)
+                return node->data;
+        }
+
+        t_c get(int index){
+            return get(_head, index);
+        }
+
+        static void update(clsNode* head, int index, t_c data){
+            clsNode* node = get_node(head, index);
+            if(node)
+                node->data = data;
+        }
+
+        void update(int index, t_c data){
+            update(_head, index, data);
+        }
+
+
+        static void insert_after(clsNode* head, int index, t_c data){
+            clsNode* node = get_node(head, index);
+            if (node)
+                insert_after(head, node, data);
+            
+            }
+            
+        void insert_after(int index, t_c data){
+            insert_after(_head, index, data);
+            _size++;
+        }
+        
+        static void del(clsNode* &head, int index){
+            clsNode* node = get_node(head, index);
+            if (node)
+            del(head, node);
+        }
+        
+        void del(int index){
+            del(_head, index);
+            _size--;
+        }
+
+
+    protected:
+        int _size = 0;
+        clsNode* _head;
+        
+};
+
+
